@@ -1,0 +1,20 @@
+# 本机数据：收藏表、接口缓存、产出
+in/
+out/
+cache/
+*.xlsx
+*.csv
+
+# 本机配置
+local.json
+project.json
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 编辑器/系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
