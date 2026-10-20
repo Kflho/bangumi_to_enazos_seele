@@ -189,5 +189,5 @@ bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/report.md
 
 - Bangumi API：<https://github.com/bangumi/api>
 - 收藏导出脚本：[gm_scripts](https://github.com/zhifengle/gm_scripts)
-- [enazo 词库格式](docs/enazo-词库格式.md)
-- [词库合并方案](docs/词库合并方案.md)：设计取舍和边界情况
+- [enazo 词库格式](bin/requirements/enazo-词库格式.md)
+- [词库合并方案](bin/requirements/词库合并方案.md)：设计取舍和边界情况
