@@ -28,7 +28,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from enazo.optimize import optimize_entries
+from enazo.optimize import dedupe_by_name, optimize_entries
 
 ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 LOCAL_JSON = ROOT / "local.json"
@@ -224,6 +224,11 @@ def cmd_import(name: str, bank: Path, append: bool, limit: int, optimize: bool) 
     if not new_tags:
         print("题库里没有解析出词条", file=sys.stderr)
         return 2
+
+    before = len(new_tags)
+    new_tags, merged_names = dedupe_by_name(new_tags)
+    if merged_names:
+        print(f"同名词条合并 {before - len(new_tags)} 条：{'、'.join(merged_names[:6])}")
 
     if optimize:
         stats, _ = optimize_entries(new_tags)

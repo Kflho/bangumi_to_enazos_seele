@@ -15,7 +15,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from enazo.optimize import find_conflicts, optimize_entries
+from enazo.optimize import dedupe_by_name, find_conflicts, optimize_entries
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -48,7 +48,7 @@ def render(entries: list[dict]) -> list[str]:
     return lines
 
 
-def write_report(path: Path, source: Path, target: Path, stats: Counter, samples, conflicts, total):
+def write_report(path: Path, source: Path, target: Path, stats: Counter, samples, conflicts, total, merged):
     added = sum(stats.values())
     out = [
         "# 题库优化报告",
@@ -71,6 +71,11 @@ def write_report(path: Path, source: Path, target: Path, stats: Counter, samples
         out += ["## 抽样", ""]
         for name, alias, rule in samples:
             out.append(f"- `{name}` 加 `{alias}`（{rule}）")
+        out.append("")
+
+    if merged:
+        out += ["## 同名词条合并", "", f"合并掉 {len(merged)} 条：", ""]
+        out += [f"- `{name}`" for name in merged[:20]]
         out.append("")
 
     out += ["## 歧义别名", ""]
@@ -104,6 +109,11 @@ def main(argv=None) -> int:
         print("题库是空的", file=sys.stderr)
         return 2
 
+    before = len(entries)
+    entries, merged = dedupe_by_name(entries)
+    if merged:
+        print(f"同名词条合并 {before - len(entries)} 条：{'、'.join(merged[:8])}")
+
     stats, samples = optimize_entries(entries, args.min_substring, args.min_alias)
     conflicts = find_conflicts(entries)
     lines = render(entries)
@@ -126,7 +136,7 @@ def main(argv=None) -> int:
     print(f"写出 -> {target}")
 
     report = args.report or target.with_name(target.stem + "-report.md")
-    write_report(report, args.input, target, stats, samples, conflicts, total)
+    write_report(report, args.input, target, stats, samples, conflicts, total, merged)
     print(f"报告 -> {report}")
     return 0
 

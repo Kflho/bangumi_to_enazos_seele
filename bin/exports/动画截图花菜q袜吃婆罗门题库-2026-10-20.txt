@@ -421,7 +421,7 @@ CENCOROLL-CONNECT,センコロール-コネクト,千子2,CENCOROLL2$宇木敦�
 春夏秋冬代行者-春之舞,春夏秋冬代行者-春の舞,Shunkashuutou-Daikousha:-Haru-no-Mai,Agents-of-the-Four-Seasons:-Dance-of-Spring,Shunkashuutou-Daikousha-–-Haru-no-Mai
 淡岛百景,淡島百景,Awajima-Hyakkei,Awashima-Hyakkei-One-Hundred-Views-of-Awajima$一周目认人，二周目细看，关于角色杂乱、情愫繁复、时序迷离，就本作讲故事的调度而言其实是长处，实际的短处在于过度文学化造就的含而不露，留白与独白叠压，演出路子写意更甚，反而削弱了一些可被感知的重量。,散文式小说，以小见大又到小，人物塑造依旧婉转有力。
 杖与剑的魔剑谭-第二季,杖と剣のウィストリア-Season-2,Tsue-to-Tsurugi-no-Wistoria-Season-2,Wistoria:-Wand-and-Sword-Season-2
-银河铁道之夜,銀河鉄道の夜
+银河铁道之夜,銀河鉄道の夜,銀河鉄道の夜-Fantasy-Railroad-in-the-Stars,The-Celestial-Railroad,Fantasy-Railroad-in-the-Stars,Ginga-Tetsudou-no-Yoru:-Fantasy-Railroad-in-the-Stars$视觉小说，很神奇吧。
 弱弱老师,よわよわ先生,Yowayowa-Sensei$胸这么大一点不好看，换成平板加三分，不是声优谁看。
 圣哥传,聖☆おにいさん,セイントおにいさん,Saint☆Onii-san,Saint☆Young-Men$太空气了
 强袭魔女2,ストライクウィッチーズ2,强袭魔女-第二季,STRIKE-WITCHES-2
@@ -583,7 +583,7 @@ Di-Gi-Charat,DiGiCharat,デ・ジ・キャラット,デ・ジ・キャラット-
 假面Noise,覆面系ノイズ,覆面系NOISE,The-Anonymous-Noise
 新来的女佣有点怪,最近雇ったメイドが怪しい,最近雇的女仆有点怪,最近雇佣的女仆有点奇怪,The-Maid-I-Recently-Hired-is-Mysterious,Saikin-Yatotta-Maid-ga-Ayashii$低配未来养哈酱，找魔法组是故意的还是不小心的，ed一起唱得了。
 无尽的斯嘉丽,果てしなきスカーレット,Hateshinaki-Scarlet,Scarlet,Hateshi-Naki-Scarlet,复仇公主斯嘉丽,無盡的施嘉莉,Scarlet永無止境的史嘉蕾,无尽希望的斯嘉丽,无尽的绯红$还回的来吗，2000年前的细田守。,放映会day5，春野樱meets玉小刚，全程没绷住。,守老师的剧本永远不会让我失望
-风筝,A-KITE$H部分太毁节奏了，应该看删减版的。
+风筝,A-KITE,Kite$H部分太毁节奏了，应该看删减版的。
 次强音,MEZZO-FORTE
 卡利古拉,Caligula-カリギュラ,卡里古拉
 战斗女子高校,バトルガール-ハイスクール,战斗女子学园,Battle-Girl-High-School$感觉不如。。。突击莉莉
@@ -656,12 +656,11 @@ MUZIK-TIGER-In-the-Forest$ep13,BV1fUfqBnEvf
 大室家-亲爱的朋友们,大室家-dear-friends,Oomuro-ke$还是悬疑片，别牛悠木碧行不。
 大室家-亲爱的姐妹们,大室家-dear-sisters,Oomuro-ke$悠木碧调戏斋藤千和，诶嘿嘿嘿。
 彗星路西法,コメット・ルシファー,Comet-Lucifer$看下第一年的rie。,烂完了，不是花音谁看。
-摇曳百合,ゆるゆり,摇曳百合-十周年特别篇,ゆるゆりてん,YuruYuri-Ten
+摇曳百合,ゆるゆり,摇曳百合-十周年特别篇,ゆるゆりてん,YuruYuri-Ten,Yuru-Yuri,YuruYuri:-Happy-Go-Lily,Yuruyuri,轻松百合,轻百合
 摇曳百合-夏日时光！+,ゆるゆり-なちゅやちゅみ!+
 摇曳百合-夏日时光！,ゆるゆり-なちゅやちゅみ!,摇曳百合-暑假时光！,摇曳百合-OVA$京绫是好的
 摇曳百合-3☆High!,ゆるゆり-さん☆ハイ！,摇曳百合-第三季
 摇曳百合♪♪,ゆるゆり♪♪,摇曳百合-第二季,摇曳百合2
-摇曳百合,ゆるゆり,Yuru-Yuri,YuruYuri:-Happy-Go-Lily,Yuruyuri,轻松百合,轻百合
 索玛丽与森林之神,ソマリと森の神様,Somali-to-Mori-no-Kamisama,Somali-and-the-Forest-Spirit,索玛丽和森林之神
 《新世纪福音战士》30周年纪念特别放映,エヴァンゲリオン放送30周年記念特別興行$果然没有机器人的eva才最好看TAT。
 超元气三姐妹-增量中！,みつどもえ-増量中!
@@ -809,9 +808,8 @@ ReLIFE,リライフ,ReLIFE-重返17歲,ReLIFE-重返17岁,重生计划
 笨蛋-测验-召唤兽2！,バカとテストと召喚獣にっ!,Baka-to-Test-to-Shoukanjuu-Ni!,Baka-and-Test:-Summon-the-Beasts-(2),Baka-to-Test-to-Shoukanjuu-2,笨蛋-测验-召唤兽2,笨蛋测试召唤兽-第二季
 笨蛋-测验-召唤兽-～祭～,バカとテストと召喚獣-〜祭〜,笨蛋-测验-召唤兽-〜祭典〜,笨蛋测试召唤兽-～祭～
 笨蛋-测验-召唤兽,バカとテストと召喚獣,Baka-to-Test-to-Shoukanjuu,笨蛋测验召唤兽,笨蛋测试召唤兽,笨蛋-测试-召唤兽
-小魔女学园,リトルウィッチアカデミア,小魔女学园（TV版）,リトルウィッチアカデミア-(テレビアニメ版),Little-Witch-Academia-(TV),Little-Witch-Academia
+小魔女学园,リトルウィッチアカデミア,小魔女学园（TV版）,リトルウィッチアカデミア-(テレビアニメ版),Little-Witch-Academia-(TV),Little-Witch-Academia,动画未来-小魔女学园,リトルウィッチアカデミア（アニメミライ）,リトル-ウィッチ-アカデミア,小魔法学园$戴安娜美如画，嗯女主也是个人。
 小魔女学园-魔法游行,リトルウィッチアカデミア-魔法仕掛けのパレード,Little-Witch-Academia-The-Enchanted-Parade
-小魔女学园,リトルウィッチアカデミア,动画未来-小魔女学园,リトルウィッチアカデミア（アニメミライ）,リトル-ウィッチ-アカデミア,小魔法学园,Little-Witch-Academia$戴安娜美如画，嗯女主也是个人。
 伪恋：,ニセコイ:,伪恋-第二季,ニセコイ：,Nisekoi:,Nisekoi-2nd-Season
 伪恋-OAD,ニセコイ-OAD,Nisekoi-OAD
 伪恋,ニセコイ$一半给新房，一半给香菜，好看夹杂着难看，而且越来越难看。
@@ -1200,8 +1198,7 @@ Exodus!,えくそだすっ！
 秋叶原之旅,AKIBA'S-TRIP-THE-ANIMATION$谁懂op看到歌手是イヤホンズ的救赎感//ep1 11：12耳机手办/ep2 4：11双叶手办/ep3 梦回声优 19：44三骑当千live 耳机ed/ep4 manias ed/ep11 0：30 三骑当千live 8：48earphones限定手办/ep12 耳机ed/ep13 14：37 manias live 21：38三骑当千后半//,听了这么久的歌才看动画我有罪，这部动画对我的意义已经超越动画本身，主线讲什么已经不重要了，我只知道男主影响我看manias了。,唉唉长久友纪
 外之国的少女,とつくにの少女,Totsukuni-no-Shoujo,The-Girl-from-the-Other-Side$李依李真可爱啊
 浪漫杀手,ロマンティック・キラー,Romantic-Killer$神人ed看笑了//被乙女耽误的小众宝藏啊，好久没看到这么精彩的搞笑番了，如果能出2我什么都会做的。女主声优的演绎也是相当的出神入化，这个声优也爱了。
-京骚戏画,京騒戯画,京骚戏画TV
-京骚戏画,京騒戯画,京骚戏画2,京騒戯画-第二弾$喜欢这种感觉，尤其是ep4，ep5。
+京骚戏画,京騒戯画,京骚戏画TV,京骚戏画2,京騒戯画-第二弾$喜欢这种感觉，尤其是ep4，ep5。
 精灵幻想记-第二季,精霊幻想記2,Seirei-Gensouki-2,Seirei-Gensouki:-Spirit-Chronicles-Season-2$不是麻里佳唱op我要闹了
 NHK15个动画短片,アニ＊クリ15,15名动画人,AniKuri15,NHK-anikuri15
 精灵幻想记,精霊幻想記,Seirei-Gensouki,Seirei-Gensouki:-Spirit-Chronicles$有人设的厕纸就是好厕纸
@@ -1277,8 +1274,7 @@ Bâan-大人的彊界,Bâan-大人の彊界,Bâan-The-Boundaries-of-Adulthood,Ba
 紫云寺家的兄弟姐妹,紫雲寺家の子供たち,紫云寺家的孩子们,紫雲寺家的兄弟姊妹,Shiunji-ke-no-Kodomotachi,The-Shiunji-Family-Children$又缺一人，还能再见到earphones吗?
 sola$看看久弥直树的实力 // 一般
 回忆积木小屋,つみきのいえ,The-House-of-Small-Cubes,La-Maison-en-Petits-Cubes,积木之家,piece-of-love-vol.1
-糖果男孩,Candy-boy
-糖果男孩,Candy☆Boy,Candy-Boy$堪比濑名紫阳花的女人出现了。
+糖果男孩,Candy-boy,Candy☆Boy$堪比濑名紫阳花的女人出现了。
 道口时间,踏切時間,踏切时间,平交道时间$ep1ep12 喜欢百合
 恋爱FLOPS,恋愛フロップス,Ren`ai-Flops,Renai-Flops,LOVE-FLOPS$ep1 逆天，有点意思。不是，李依李怎么又是小男娘//ep2 有点搞不懂这是什么番了。怎么还有麻里佳，earphones日常少一人。/// 还挺有意思的，原创番的魅力。,ep4逆天。
 阿茹茉妮,アルモニ,HARMONIE
@@ -1354,7 +1350,7 @@ GREED,グリード$从进击巨人到梦游仙境到赛博朋克再飞上太空�
 CLANNAD-〜AFTER-STORY〜$难评。,闹麻了，很符合我对“世一动”的想象。
 三体,三体-ANIMATION,三体-动画版$原作党。
 胆大党,ダンダダン,当哒当,超自然武装当哒当,膽大黨,DAN-DA-DAN,dandadan$ep7之后逐渐无感。
-乱马1-2,らんま1-2,新-乱马1-2,Ranma-1-2-(Completely-New-Anime),らんま1-2（2024）,Ranma1-2-(2024)$2024.10周指活。
+乱马1-2,らんま1-2,新-乱马1-2,Ranma-1-2-(Completely-New-Anime),らんま1-2（2024）,Ranma1-2-(2024),Ranma-½,らんま½,乱马½$2024.10周指活。
 CLANNAD-另一个世界-智代篇,CLANNAD-もうひとつの世界-智代編$结尾配乐不如用空に光る，真用了能给7。
 深夜重拳,真夜中ぱんチ,深夜-Punch,深夜中的一击,深夜冲击,Mayonaka-Punch$输在人设。
 刺客伍六七,刺客五六七,KILLER-SEVEN$特供合家欢动画。
@@ -1461,7 +1457,6 @@ ToHeart,同班同学$和田薰配乐下的古典派校园生活美学，朦朦�
 音乐,音楽,ON-GAKU:-Our-Sound,摇滚吧！中二乐团$木讷摇滚，电波主义，无调性动画，竟出音味来，停顿演出大师岩井泽健治不仅略懂前卫，更深谙自卫，初涉先锋，更熟稔抽风，于是狂野地自卫，jam完jump，砸完贝斯砸竖笛，纯粹感性嘶吼，物我两忘，涕泗横流，发自肺腑，稀里糊涂，初四来福……我被超度了，不遗余力地。
 命运石之门-负荷领域的既视感,STEINS-GATE-負荷領域のデジャヴ,Steins-Gate:-Fuka-Ryouiki-no-Déjà-vu,Steins-Gate-The-Movie-–-Load-Region-of-Déjà-Vu,Steins-Gate-剧场版$和解了。
 青瞳少女的故事,青い瞳の女の子のお話,'09戦争童話-青い瞳の女の子のお話,The-Story-of-the-Blue-Eyed-Girl$老生常谈的反战or反战败。
-银河铁道之夜,銀河鉄道の夜-Fantasy-Railroad-in-the-Stars,銀河鉄道の夜,The-Celestial-Railroad,Fantasy-Railroad-in-the-Stars,Ginga-Tetsudou-no-Yoru:-Fantasy-Railroad-in-the-Stars$视觉小说，很神奇吧。
 想在世界灭亡之前遇见你,#セカイが滅びる前にキミに会いたい,想在世界灭亡时见到你,World-Before-You-End,Sekai-ga-Horobiru-Mae-ni-Kimi-ni-Aitai$不该只有3.7。
 最近-妹妹的样子有点怪？,最近-妹のようすがちょっとおかしいんだが。,Recently-my-sister-is-unusual.,最近-我的妹妹有点怪。,最近我的妹妹有点怪,妹ちょ。$卖个肉能卖得这么膈应。
 崖上的波妞,崖の上のポニョ,Ponyo,悬崖上的金鱼姬,悬崖上的金鱼公主,崖上の波兒$QQ弹弹。
@@ -1681,10 +1676,9 @@ K-On!!:Ura-On!!,うらおん!!
 K-On!:Ura-On!,うらおん!
 帕卢姆之树,パルムの樹,パルムのき,A-Tree-of-Palme,Palme-no-Ki
 幸福是什么,しあわせってなあに
-一杆青空,空色ユーティリティ,空色Utility,Sora-iro-Utility,Sorairo-Utility
+一杆青空,空色ユーティリティ,空色Utility,Sora-iro-Utility,Sorairo-Utility,Sorairo-Utility-(2025)
 人生单车,人生單車
 柠檬,LEMON
-风筝,Kite
 中年上班族转生恶役,悪役令嬢転生おじさん,大叔转生恶役大小姐,中年大叔轉生反派千金,Akuyaku-Reijou-Tensei-Ojisan,From-Bureaucrat-to-Villainess:-Dad's-Been-Reincarnated!
 更衣人偶坠入爱河,その着せ替え人形は恋をする,Sono-Kisekae-Ningyou-wa-Koi-wo-suru,Sono-Bisque-Doll-wa-Koi-wo-Suru,恋上换装娃娃,My-Dress-Up-Darling
 在下坂本-有何贵干？,坂本ですが？,我叫坂本我最屌$不输齐木楠雄
@@ -1694,8 +1688,6 @@ K-On!:Ura-On!,うらおん!
 命运石之门-聪明睿智的认知计算,STEINS-GATE-聡明叡智のコグニティブ・コンピューティング
 魔法少女小圆-新作概念视频,魔法少女まどか☆マギカ-コンセプトムービー,Puella-Magi-Madoka-Magica-Concept-Movie
 坂本日常,SAKAMOTO-DAYS,サカモトデイズ,坂本-DAYS
-一杆青空,空色ユーティリティ,空色Utility,Sora-iro-Utility,Sorairo-Utility-(2025)
-乱马1-2,らんま1-2,Ranma-½,らんま½,乱马½
 哆啦A梦,ドラえもん,哆啦A梦新番,哆啦A梦-水田版,哆啦A梦-2005版,ドラえもん-(2005年),ドラえもん-第2作第2期,Doraemon-(2005)
 钢之炼金术师-FULLMETAL-ALCHEMIST,鋼の錬金術師-FULLMETAL-ALCHEMIST,Hagane-no-Renkinjutsushi-(2009),Fullmetal-Alchemist:-Brotherhood,鋼の錬金術師-FULLMETAL-ALCHEMIST-(2009),钢之炼金术师-FA,钢之炼金术师-2009
 我心里危险的东西-第二季,僕の心のヤバイやつ-第2期,Boku-no-Kokoro-no-Yabai-Yatsu-2nd-Season,The-Dangers-in-My-Heart-2nd-Season,我内心的糟糕念头-第二季,我心中的野兽-第二季
@@ -2032,7 +2024,6 @@ Love-Live!-Superstar!!-第三季,ラブライブ！スーパースター!!-3期,
 福星小子3-记得我的爱,うる星やつら3-リメンバー・マイ・ラブ,Urusei-Yatsura-3:-Remember-My-Love
 福星小子1-爱星球之恋,うる星やつら-オンリー・ユー,福星小子1-Only-You,Urusei-Yatsura-Movie-1:-Only-You,Urusei-Yatsura:-Only-You$单集体量拉成剧场版多少显得冗长了
 福星小子-OVA,うる星やつら,うる星やつら-(OVA)
-福星小子,うる星やつら,Urusei-Yatsura
 村井之恋,村井の恋,MURAI-in-LOVE$师生版堀与宫村piece
 监狱兔-第五季,Usavich-Season-5,Усавич,ウサビッチ,普京兔和基里连科兔的监狱生活,越狱兔
 监狱兔-第四季,Usavich-Season-4,ウサビッチ,越狱兔,普京兔和基里连科兔的监狱生活
@@ -2183,14 +2174,13 @@ BanG-Dream!-Episode-of-Roselia-Ⅱ-:-Song-I-am.
 BanG-Dream!-Episode-of-Roselia-Ⅰ-:-约定,BanG-Dream!-Episode-of-Roselia-Ⅰ-:-約束
 BanG-Dream!-FILM-LIVE,バンドリ！-フィルムライブ
 BanG-Dream!-第三季,BanG-Dream!-3rd-Season
-灌篮高手,THE-FIRST-SLAM-DUNK,映画-スラムダンク,SLAM-DUNK-MOVIE,灌篮高手-电影版,灌篮高手：THE-FIRST
+灌篮高手,THE-FIRST-SLAM-DUNK,映画-スラムダンク,SLAM-DUNK-MOVIE,灌篮高手-电影版,灌篮高手：THE-FIRST,スラムダンク,SLAM-DUNK,男儿当入樽
 BanG-Dream!-第二季,BanG-Dream!-2nd-Season
 阿基拉,AKIRA,アキラ,光明战士阿基拉,亚基拉,阿七拉机器人
 BanG-Dream!,バンドリ！,炸梦！
 铁路浪漫谭,レヱル・ロマネスク,火车浪漫谭,Rail-Romanesque,まいてつ,爱上火车
 入间同学入魔了,魔入りました！入間くん,Mairimashita!-Iruma-kun,Welcome-to-Demon-School!-Iruma-kun
 死神-千年血战篇,BLEACH-千年血戦篇,BLEACH-千年血戦編,Bleach:-Sennen-Kessen-hen,Bleach:-Thousand-Year-Blood-War
-灌篮高手,スラムダンク,SLAM-DUNK,男儿当入樽
 尼尔：自动人形-Ver1.1a,NieR:-Automata-Ver1.1a,尼尔-自动人形,尼尔-机械纪元,ニーア-オートマタ
 剑风传奇-黄金时代篇III-降临,ベルセルク-黄金時代篇III-降臨,Berserk:-The-Golden-Age-Arc-III-The-Advent,Berserk:-Ougon-jidai-hen-III-Kourin,Berserk-The-Golden-AGE-ARC-III-The-Descent
 剑风传奇-黄金时代篇II-多尔多雷攻略,ベルセルク-黄金時代篇II-ドルドレイ攻略,Berserk-Golden-Age-Arc-II-The-Battle-For-Doldrey

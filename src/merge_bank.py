@@ -31,6 +31,7 @@ from datetime import date as date_cls
 from pathlib import Path
 
 from enazo.bank import DASH_MODES, build_tokens, check_lines, clean_hint
+from enazo.optimize import dedupe_by_name
 
 ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 DATA_DIR = ROOT / "bin" / "data"
@@ -144,7 +145,32 @@ def merge_users(users, snapshots, dash_mode, hint_sep):
             if user not in entry["sources"]:
                 entry["sources"].append(user)
 
-    return [(sid, merged[sid]) for sid in order], ids_by_user
+    # 同名条目合并成一条（不同 subject 可能撞同一个中文名，管理员会查这个）
+    entries = [
+        {
+            "name": merged[sid]["tokens"][0],
+            "alias": merged[sid]["tokens"][1:],
+            "reminds": merged[sid]["hints"],
+            "sources": merged[sid]["sources"],
+            "sid": sid,
+        }
+        for sid in order
+    ]
+    kept, merged_names = dedupe_by_name(entries)
+    absorbed = {entry["sid"] for entry in entries} - {entry["sid"] for entry in kept}
+
+    bank = [
+        (
+            entry["sid"],
+            {
+                "tokens": [entry["name"]] + list(entry.get("alias") or []),
+                "hints": list(entry.get("reminds") or []),
+                "sources": list(entry.get("sources") or []),
+            },
+        )
+        for entry in kept
+    ]
+    return bank, ids_by_user, absorbed, merged_names
 
 
 def render(bank, hint_sep: str) -> list[str]:
@@ -160,12 +186,12 @@ def render(bank, hint_sep: str) -> list[str]:
 # ---------------------------------------------------------------- 校验
 
 
-def verify(lines, bank, ids_by_user) -> tuple[list[str], list[str]]:
+def verify(lines, bank, ids_by_user, absorbed: set[int] | None = None) -> tuple[list[str], list[str]]:
     """返回 (错误, 提醒)。同名词条多半是不同作品，只提醒不算错。"""
     problems: list[str] = []
 
     for user, ids in ids_by_user.items():
-        missing = ids - {sid for sid, _ in bank}
+        missing = ids - {sid for sid, _ in bank} - (absorbed or set())
         if missing:
             sample = "、".join(str(sid) for sid in list(missing)[:5])
             problems.append(f"{user} 有 {len(missing)} 条没进合并结果：{sample}")
@@ -248,7 +274,7 @@ def main(argv=None) -> int:
         print(exc, file=sys.stderr)
         return 2
 
-    bank, ids_by_user = merge_users(users, snapshots, args.dash, args.hint_sep)
+    bank, ids_by_user, absorbed, merged_names = merge_users(users, snapshots, args.dash, args.hint_sep)
     lines = render(bank, args.hint_sep)
     if not lines:
         print("没有可合并的条目", file=sys.stderr)
@@ -259,7 +285,7 @@ def main(argv=None) -> int:
     target = out_dir / f"{args.title}-{args.date}.txt"
     target.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    problems, warnings = verify(lines, bank, ids_by_user)
+    problems, warnings = verify(lines, bank, ids_by_user, absorbed)
     issues = check_lines(lines, args.dash)
     write_report(
         out_dir / "report.md", args, users, lines, bank, ids_by_user, problems, warnings, issues
@@ -268,6 +294,8 @@ def main(argv=None) -> int:
     print(f"合并 {len(users)} 个用户：{'、'.join(users)}")
     for user in users:
         print(f"  {user}: 收藏 {len(ids_by_user[user])} 条")
+    if merged_names:
+        print(f"同名合并 {len(merged_names)} 条：{'、'.join(merged_names[:8])}")
     print(f"合并后 {len(lines)} 条，平均每行 {(sum(len(e['tokens']) - 1 for _, e in bank) / len(bank)):.2f} 个别名")
     print(f"产出 -> {target}")
     print(f"报告 -> {out_dir / 'report.md'}")

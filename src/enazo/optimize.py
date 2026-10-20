@@ -174,3 +174,51 @@ def find_conflicts(entries: list[dict]) -> list[str]:
         for alias in entry.get("alias") or []:
             owners.setdefault(alias.casefold(), set()).add(name)
     return [alias for alias, names in owners.items() if len(names) > 1]
+
+
+def dedupe_by_name(entries: list[dict], sep: str = ","):
+    """把同名词条合并成一条，跟页面上的「删除名称重复词条」一个意思。
+
+    保留先出现的那条，别名和提示取并集。entries 里认三个键：
+    `name`、`alias`（列表）、以及 `reminds`（列表）或 `hint`（字符串）。
+
+    返回 (合并后的列表, 被合并掉的词条名)。
+    """
+    kept: list[dict] = []
+    index: dict[str, dict] = {}
+    merged: list[str] = []
+
+    for entry in entries:
+        name = (entry.get("name") or "").strip()
+        if not name:
+            continue
+        first = index.get(name)
+        if first is None:
+            index[name] = entry
+            kept.append(entry)
+            continue
+
+        seen = {alias.casefold() for alias in first.get("alias") or []}
+        for alias in entry.get("alias") or []:
+            key = alias.casefold()
+            if key not in seen:
+                seen.add(key)
+                first.setdefault("alias", []).append(alias)
+
+        if "reminds" in first or "reminds" in entry:
+            joined = list(first.get("reminds") or []) + list(entry.get("reminds") or [])
+            first["reminds"] = list(dict.fromkeys(part for part in joined if part))
+
+        if "hint" in first or "hint" in entry:
+            head = (first.get("hint") or "").strip()
+            tail = (entry.get("hint") or "").strip()
+            if tail and tail not in head:
+                first["hint"] = f"{head}{sep}{tail}" if head else tail
+
+        if "sources" in first or "sources" in entry:
+            joined = list(first.get("sources") or []) + list(entry.get("sources") or [])
+            first["sources"] = list(dict.fromkeys(joined))
+
+        merged.append(name)
+
+    return kept, merged
