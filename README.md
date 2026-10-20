@@ -25,13 +25,15 @@
 python bangumi_to_enazo.py
 ```
 
-产出：
+产出（文件名用昵称，不用数字 id）：
 
 ```text
-bin/exports/723737-2026-10-20.txt
-bin/exports/kflhotat-2026-10-20.txt
+bin/exports/Rokka-2026-10-20.txt
+bin/exports/Kflho-2026-10-20.txt
 bin/exports/report-2026-10-20.md
 ```
+
+昵称会缓存在 `bin/data/profiles.json`，离线跑也能用昵称命名。
 
 临时指定用户也行：`python bangumi_to_enazo.py --user sai`。
 
@@ -74,8 +76,8 @@ python bangumi_to_enazo.py --input in/collection.xlsx --status all
 |---|---|---|
 | `bin/data/collections/<user>-t<type>.json` | 收藏快照，带每条的 `updated_at` | 增量同步靠它判断从哪页停 |
 | `bin/data/subjects/<id>.json` | 条目详情，别名从这里取 | 抓到一次就不再请求 |
-| `bin/exports/<user>-<date>.txt` | 词库 | 同一天重跑会覆盖 |
-| `bin/exports/report-<date>.md` | 当天报告 | 每次重写 |
+| `bin/exports/<昵称>-<日期>.txt` | 词库 | 同一天重跑会覆盖 |
+| `bin/exports/report-<日期>.md` | 当天报告 | 每次重写 |
 
 `bin/` 和 `local.json` 都不入库。
 
@@ -108,16 +110,29 @@ enazo 把 `,` `，` `、` `;` `；` `/` 和空白当分隔符，名字里带这�
 `merge_bank.py` 按 subject id 把几个人的词库并成一个：别名取并集，提示是各人评论
 并列（逗号分隔）。只读本地快照和缓存，不联网。
 
-```bash
-python merge_bank.py --users 469325 869334 chiotto 723737
+要合并谁、题库叫什么，都写在 `local.json` 里：
+
+```json
+{
+  "merge_users": ["469325", "869334", "chiotto", "723737"],
+  "merge_title": "动画截图花菜q袜吃婆罗门题库"
+}
 ```
 
-产出：
+然后直接跑：
+
+```bash
+python merge_bank.py
+```
+
+产出（题库名后面跟日期）：
 
 ```text
-bin/exports/merged-2026-10-20/merged-2026-10-20.txt
-bin/exports/merged-2026-10-20/report.md
+bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/动画截图花菜q袜吃婆罗门题库-2026-10-20.txt
+bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/report.md
 ```
+
+临时换人可以 `--users a b`，临时换名可以 `--title 名字`。
 
 跑完会自检并写进报告：
 
@@ -159,7 +174,7 @@ bin/exports/merged-2026-10-20/report.md
 ## 验证
 
 1. 跑完看 `bin/exports/report-<date>.md`：失败条目、没补到别名的词条、格式自检结果；
-2. 抽查 `bin/exports/<user>-<date>.txt` 前几行，确认词条名没被截断、`$` 后提示完整；
+2. 抽查 `bin/exports/<昵称>-<日期>.txt` 前几行，确认词条名没被截断、`$` 后提示完整；
 3. `--check` 会检查空行、多个 `$`、残留分隔符和空词条名。
 
 ## 已知限制

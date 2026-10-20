@@ -1,6 +1,9 @@
 {
-  "users": ["your_bangumi_username"],
+  "users": ["723737", "469325", "869334", "kflhotat"],
   "subject_type": 2,
   "dash": "all",
-  "delay": 0.5
+  "rate": 6.0,
+  "workers": 6,
+  "merge_users": ["469325", "869334", "chiotto", "723737"],
+  "merge_title": "动画截图花菜q袜吃婆罗门题库"
 }

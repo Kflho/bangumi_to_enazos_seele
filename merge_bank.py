@@ -16,8 +16,10 @@
 
 产出：
 
-    bin/exports/merged-<日期>/merged-<日期>.txt
-    bin/exports/merged-<日期>/report.md
+    bin/exports/<题库名>-<日期>/<题库名>-<日期>.txt
+    bin/exports/<题库名>-<日期>/report.md
+
+题库名默认取 local.json 的 merge_title，也可以用 --title 指定。
 """
 
 from __future__ import annotations
@@ -33,15 +35,36 @@ from enazo.bank import DASH_MODES, build_tokens, check_lines, clean_hint
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "bin" / "data"
 EXPORTS_DIR = ROOT / "bin" / "exports"
+LOCAL_JSON = ROOT / "local.json"
 
 TYPE_NAME = "看过"
 
 
+def load_config() -> dict:
+    if not LOCAL_JSON.exists():
+        return {}
+    try:
+        return json.loads(LOCAL_JSON.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def parse_args(argv=None):
+    config = load_config()
     parser = argparse.ArgumentParser(description="按 subject id 合并多个用户的词库。")
-    parser.add_argument("--users", nargs="+", required=True, help="要合并的用户名，按顺序排在前面")
+    parser.add_argument(
+        "--users",
+        nargs="+",
+        default=config.get("merge_users"),
+        help="要合并的用户名，按顺序排在前面；默认取 local.json 的 merge_users",
+    )
     parser.add_argument("--collection-type", type=int, default=2, help="收藏类型，默认 2=看过")
     parser.add_argument("--date", default="", help="目录里的日期，默认今天")
+    parser.add_argument(
+        "--title",
+        default=config.get("merge_title", "merged"),
+        help="题库名，默认取 local.json 的 merge_title，没有就用 merged",
+    )
     parser.add_argument("--dash", choices=sorted(DASH_MODES), default="all", help="清洗档位")
     parser.add_argument("--hint-sep", default=",", help="多条评论之间的分隔符，默认逗号")
     return parser.parse_args(argv)
@@ -56,7 +79,7 @@ def load_snapshot(user: str, collection_type: int) -> dict:
         raise FileNotFoundError(
             f"{user} 没有本地快照（{path.name}），先跑一次 bangumi_to_enazo.py --user {user}"
         )
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def load_subject(sid: int, cache: dict) -> dict | None:
@@ -66,7 +89,7 @@ def load_subject(sid: int, cache: dict) -> dict | None:
     data = None
     if path.exists():
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8-sig"))
         except (OSError, json.JSONDecodeError):
             data = None
     cache[sid] = data
@@ -168,6 +191,7 @@ def write_report(path: Path, args, users, lines, bank, ids_by_user, problems, wa
     out = [
         "# 合并题库报告",
         "",
+        f"- 题库名：{args.title}",
         f"- 合并日期：{args.date}",
         f"- 成员：{'、'.join(users)}",
         f"- 收藏类型：{TYPE_NAME}",
@@ -213,6 +237,9 @@ def write_report(path: Path, args, users, lines, bank, ids_by_user, problems, wa
 def main(argv=None) -> int:
     args = parse_args(argv)
     args.date = args.date or date_cls.today().isoformat()
+    if not args.users:
+        print("没指定要合并谁：用 --users，或者在 local.json 里写 merge_users", file=sys.stderr)
+        return 2
     users = list(dict.fromkeys(args.users))
 
     try:
@@ -227,9 +254,9 @@ def main(argv=None) -> int:
         print("没有可合并的条目", file=sys.stderr)
         return 2
 
-    out_dir = EXPORTS_DIR / f"merged-{args.date}"
+    out_dir = EXPORTS_DIR / f"{args.title}-{args.date}"
     out_dir.mkdir(parents=True, exist_ok=True)
-    target = out_dir / f"merged-{args.date}.txt"
+    target = out_dir / f"{args.title}-{args.date}.txt"
     target.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     problems, warnings = verify(lines, bank, ids_by_user)

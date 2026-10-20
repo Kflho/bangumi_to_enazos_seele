@@ -41,6 +41,13 @@ EXPORTS_DIR = ROOT / "bin" / "exports"
 SUBJECT_ID_RE = re.compile(r"/subject/(\d+)")
 STATUS_NAMES = tuple(TYPE_NAMES.values())
 name_to_type = {name: type_id for type_id, name in TYPE_NAMES.items()}
+INVALID_FILENAME = re.compile(r'[\\/:*?"<>|\s]+')
+
+
+def safe_name(text: str, fallback: str) -> str:
+    """文件名用昵称：去掉 Windows 不允许的字符，空了就退回用户标识。"""
+    cleaned = INVALID_FILENAME.sub("_", (text or "").strip()).strip("_")
+    return (cleaned or fallback)[:60]
 
 
 # ---------------------------------------------------------------- 配置
@@ -50,7 +57,7 @@ def load_local_config() -> dict:
     if not LOCAL_JSON.exists():
         return {}
     try:
-        return json.loads(LOCAL_JSON.read_text(encoding="utf-8"))
+        return json.loads(LOCAL_JSON.read_text(encoding="utf-8-sig"))
     except (OSError, json.JSONDecodeError) as exc:
         print(f"local.json 读不出来（{exc}），这次只看命令行参数", file=sys.stderr)
         return {}
@@ -112,6 +119,24 @@ def parse_args(argv=None):
 # ---------------------------------------------------------------- 数据源
 
 
+def load_profiles() -> dict:
+    """昵称缓存，离线跑也能用昵称命名产出。"""
+    path = DATA_DIR / "profiles.json"
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def save_profiles(profiles: dict) -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    (DATA_DIR / "profiles.json").write_text(
+        json.dumps(profiles, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
 def parse_statuses(value: str) -> list[tuple[int, str]]:
     """把 --status 拆成 [(收藏类型, 中文名), ...]；all 表示五种状态都要。"""
     parts = [part.strip() for part in (value or "").replace("，", ",").split(",") if part.strip()]
@@ -130,10 +155,17 @@ def load_from_users(args, statuses):
     """按用户、按收藏类型同步，合并成一个列表。"""
     http = Http(rate=args.rate, delay=args.delay)
     store = CollectionStore(DATA_DIR / "collections", http)
+    profiles = load_profiles()
     results = {}
     for user in args.users:
         profile = None if args.offline else http.get_json(f"/v0/users/{user}")
-        nickname = (profile or {}).get("nickname") or ""
+        if profile:
+            profiles[user] = {
+                "username": profile.get("username") or user,
+                "nickname": profile.get("nickname") or "",
+            }
+            save_profiles(profiles)
+        nickname = profiles.get(user, {}).get("nickname", "")
         merged: dict[int, dict] = {}
         pages = added = updated = 0
         errors: list[str] = []
@@ -433,7 +465,7 @@ def main(argv=None) -> int:
         if interrupted or prefetch_interrupted:
             exit_code = 130
 
-        target = EXPORTS_DIR / f"{user}-{export_date}.txt"
+        target = EXPORTS_DIR / f"{safe_name(stats.nickname, user)}-{export_date}.txt"
         target.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
         extra = sum(alias_counts) - len(alias_counts)
