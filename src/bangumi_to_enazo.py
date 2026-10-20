@@ -5,15 +5,16 @@
 
     python src/bangumi_to_enazo.py                  # 用 local.json 里的用户列表
     python src/bangumi_to_enazo.py --user sai       # 临时指定一个用户
-    python src/bangumi_to_enazo.py --input in/collection.xlsx   # 已有的收藏导出表
+    python src/bangumi_to_enazo.py --input bin/data/collection.xlsx   # 已有的收藏导出表
 
 产出按日期存档，同一天重跑覆盖当天的文件：
 
-    bin/exports/2026-10-20/sai.txt
-    bin/exports/2026-10-20/report.md
+    bin/exports/Rokka-2026-10-20.txt
+    bin/exports/report-2026-10-20.md
 
-中间数据都在 bin/data 下：收藏快照 collections/、条目缓存 subjects/。
-收藏列表按 updated_at 倒序增量拉取，条目别名抓到一次就不再请求。
+中间数据都在 bin/data 下：收藏快照 collections/、条目缓存 subjects/、
+导出的表格 collection.xlsx。收藏列表按 updated_at 倒序增量拉取，
+条目别名抓到一次就不再请求。
 """
 
 from __future__ import annotations

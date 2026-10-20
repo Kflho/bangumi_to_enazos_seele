@@ -74,7 +74,7 @@ python src/bangumi_to_enazo.py --status all
 **导出表**：也能吃 [gm_scripts](https://github.com/zhifengle/gm_scripts) 导出的 xlsx / csv：
 
 ```bash
-python src/bangumi_to_enazo.py --input in/collection.xlsx --status all
+python src/bangumi_to_enazo.py --input bin/data/collection.xlsx --status all
 ```
 
 表里要有 `名称` / `别名` / `地址` / `吐槽` / `观看状态` 这几列，表头写成
@@ -86,6 +86,7 @@ python src/bangumi_to_enazo.py --input in/collection.xlsx --status all
 |---|---|---|
 | `bin/data/collections/<user>-t<type>.json` | 收藏快照，带每条的 `updated_at` | 增量同步靠它判断从哪页停 |
 | `bin/data/subjects/<id>.json` | 条目详情，别名从这里取 | 抓到一次就不再请求 |
+| `bin/data/collection.xlsx` | 导出的收藏表（走读表模式时用） | 表里已有数据时不必再连网 |
 | `bin/exports/<昵称>-<日期>.txt` | 词库 | 同一天重跑会覆盖 |
 | `bin/exports/report-<日期>.md` | 当天报告 | 每次重写 |
 
