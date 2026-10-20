@@ -88,6 +88,12 @@ def build_tokens(
     return tokens
 
 
+def clean_hint(hint: str, separator: str = ",") -> str:
+    """把多行吐槽并成一行：每行是一条独立提示，用题库标准的逗号并列，不粘连。"""
+    parts = [line.strip() for line in NEWLINE_RE.split(hint or "")]
+    return separator.join(part for part in parts if part)
+
+
 def build_line(
     name: str,
     jp_name: str,
@@ -95,6 +101,7 @@ def build_line(
     subject: dict | None,
     dash_mode: str = "all",
     with_hint: bool = True,
+    hint_sep: str = ",",
 ) -> str:
     """拼一整行；词条名为空或全被清洗掉时返回空串。"""
     tokens = build_tokens(name, jp_name, subject, dash_mode)
@@ -102,7 +109,7 @@ def build_line(
         return ""
     line = ",".join(tokens)
     if with_hint:
-        cleaned = NEWLINE_RE.sub("", hint or "").strip()
+        cleaned = clean_hint(hint, hint_sep)
         if cleaned:
             line += "$" + cleaned
     return line

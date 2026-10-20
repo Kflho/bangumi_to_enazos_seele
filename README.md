@@ -1,7 +1,6 @@
 # bangumi_to_enazos_seele
 
-把 Bangumi 的标记列表转成 enazo（绘谜）词库。读取收藏导出表，逐条问 Bangumi 接口要别名，
-输出 enazo 批量录入用的文本，一行一条：
+把 Bangumi 标记列表导成 enazo（绘谜）词库。默认只导「看过」，按用户和日期分开存档。
 
 ```text
 词条名,别名一,别名二$小狐狸提示
@@ -9,86 +8,171 @@
 
 ## 快速开始
 
-```bash
-python bangumi_to_enazo.py --input in/collection.xlsx
+在仓库根目录放一个 `local.json`（不入库）：
+
+```json
+{
+  "users": ["723737", "kflhotat"],
+  "subject_type": 2,
+  "dash": "all",
+  "delay": 0.25
+}
 ```
 
-先小样本核对格式：
+然后：
 
 ```bash
-python bangumi_to_enazo.py --input in/collection.xlsx --limit 20
+python bangumi_to_enazo.py
 ```
 
-结果写在 `out/bank.txt`，同时生成 `out/report.md` 记录失败条目、没补到别名的行、
-被清洗的词条名。
+产出：
 
-## 输入
+```text
+bin/exports/723737-2026-10-20.txt
+bin/exports/kflhotat-2026-10-20.txt
+bin/exports/report-2026-10-20.md
+```
 
-表格来自 Bangumi 收藏导出脚本（[gm_scripts](https://github.com/zhifengle/gm_scripts) 的
-「导出收藏」），xlsx 和 csv 都行。至少要这几列：
+临时指定用户也行：`python bangumi_to_enazo.py --user sai`。
 
-| 列 | 用途 |
+## 标记与状态
+
+Bangumi 的标记分五种状态，接口里是 `type` 1–5：
+
+| type | 状态 |
 |---|---|
-| `名称` | 中文名，作为词条名 |
-| `别名` | 导出表里的日文原名，作为别名 |
-| `地址` | 形如 `/subject/551559`，subject id 从这里取 |
-| `吐槽` | 可选，作为 `$` 后面的小狐狸提示 |
-| `观看状态` | 可选，配合 `--status` 筛条目 |
+| 1 | 想看 |
+| 2 | **看过（默认只导这个）** |
+| 3 | 在看 |
+| 4 | 搁置 |
+| 5 | 抛弃 |
 
-表头写成 `name` / `greyName` / `url` / `comment` 也认。
+要别的状态就显式写，逗号分隔，`all` 表示五种都要：
 
-## 输出
+```bash
+python bangumi_to_enazo.py --status 看过,在看
+python bangumi_to_enazo.py --status all
+```
 
-`姓名,别名…$提示`，别名顺序是：表格的中文名 → 接口的中文名 → 日文原名 → 接口原名 →
-条目信息里的「中文名 / 别名 / 英文名 / 罗马字」。
+## 数据来源
 
-enazo 把 `,` `，` `、` `;` `；` `/` 和空白当分隔符，名字里带这些字符会被切成两段，
+**用户列表（推荐）**：走 `/v0/users/{username}/collections`，每次导出都是拿「当下」的标记，
+不需要先导出 Excel。
+
+**导出表**：也能吃 [gm_scripts](https://github.com/zhifengle/gm_scripts) 导出的 xlsx / csv：
+
+```bash
+python bangumi_to_enazo.py --input in/collection.xlsx --status all
+```
+
+表里要有 `名称` / `别名` / `地址` / `吐槽` / `观看状态` 这几列，表头写成
+`name` / `greyName` / `url` / `comment` 也认。
+
+## 本地数据与缓存
+
+| 路径 | 内容 | 何时复用 |
+|---|---|---|
+| `bin/data/collections/<user>-t<type>.json` | 收藏快照，带每条的 `updated_at` | 增量同步靠它判断从哪页停 |
+| `bin/data/subjects/<id>.json` | 条目详情，别名从这里取 | 抓到一次就不再请求 |
+| `bin/exports/<user>-<date>.txt` | 词库 | 同一天重跑会覆盖 |
+| `bin/exports/report-<date>.md` | 当天报告 | 每次重写 |
+
+`bin/` 和 `local.json` 都不入库。
+
+## 增量是怎么做的
+
+收藏接口按 `updated_at` **倒序**返回，每页最多 100 条，所以：
+
+- 上次同步记下最新的 `updated_at`，这次从第一页开始翻；
+- 翻到比它更旧的记录就停，没改动的话只花 **1 个请求**；
+- 新增和变动按 `updated_at` 比对，报告里分开计数；
+- 想强制全量重拉用 `--full`。
+
+条目别名变更频率低，`bin/data/subjects` 里的缓存一直复用；想强制刷新就删对应文件。
+
+## 输出规则
+
+词条名取表格或接口的中文名，别名依次是：中文名 → 接口中文名 → 日文原名 → 接口原名 →
+条目信息里的「中文名 / 别名 / 英文名 / 罗马字」，去重后拼接。
+
+enazo 把 `,` `，` `、` `;` `；` `/` 和空白当分隔符，名字里带这些会被切成两段，
 所以默认换成 `-`（`--dash all`）。只想换分隔符、保留空格用 `--dash seps`，
 全都不动用 `--dash none`。
+
+`吐槽` 列放在 `$` 后面当小狐狸提示。单元格里有多条评论时按行拆开、用逗号并列
+（官方示例就是 `$小狐狸文案，小狐狸2，小狐狸提示`），不会粘成一句；
+`--hint-sep` 可改分隔符，传空串表示直接相接。`--no-hint` 整个关掉提示。
+
+## 合并多个用户的词库
+
+`merge_bank.py` 按 subject id 把几个人的词库并成一个：别名取并集，提示是各人评论
+并列（逗号分隔）。只读本地快照和缓存，不联网。
+
+```bash
+python merge_bank.py --users 469325 869334 chiotto 723737
+```
+
+产出：
+
+```text
+bin/exports/merged-2026-10-20/merged-2026-10-20.txt
+bin/exports/merged-2026-10-20/report.md
+```
+
+跑完会自检并写进报告：
+
+- 每个用户的条目是否都进了合并结果（漏一条就报错）；
+- 同名词条（多半是不同季/不同版本，只提醒不算错）；
+- 格式自检：空行、多个 `$`、残留分隔符。
 
 ## 常用参数
 
 | 参数 | 说明 |
 |---|---|
-| `--input` / `--output` | 输入表格、输出词库，默认 `in/collection.xlsx`、`out/bank.txt` |
-| `--cache` | 条目缓存目录，默认 `cache/subjects` |
-| `--offline` | 只用缓存，不发请求 |
-| `--status 看过,在看` | 只导出这几类标记 |
-| `--no-hint` | 不输出 `$` 后面的提示 |
+| `--user` | 指定用户，可重复；不给就用 `local.json` 的 `users` |
+| `--input` | 改用导出表（xlsx / csv） |
+| `--status` | 导哪些标记状态，默认 `看过` |
+| `--date` | 产出日期，默认今天 |
+| `--full` | 全量重拉收藏列表 |
+| `--offline` | 只用本地快照和缓存，不发请求 |
 | `--dash all\|seps\|none` | 分隔符与空白的处理档位 |
-| `--delay 0.5` | 请求间隔，被限流时脚本会自己放慢 |
-| `--limit 20` | 只跑前 20 行 |
-| `--progress-every 10` | 每 N 行打一条进度，0 表示不打 |
+| `--no-hint` | 不输出提示 |
+| `--hint-sep` | 多条评论之间的分隔符，默认半角逗号 |
+| `--check` | 写完后体检输出格式 |
+| `--limit N` | 每个用户只处理前 N 条 |
+| `--workers N` | 并发抓条目详情的线程数，默认 6 |
+| `--rate R` | 全局每秒请求上限，默认 6；0 表示按 `--delay` 串行 |
+| `--progress-every N` | 每 N 条打一条进度，0 表示不打 |
 
 ## 网络
 
 `api.bgm.tv` 只读公开数据，不需要登录，但要求请求带 User-Agent，且直连常常超时，
-需要走代理。用代理跑一层即可：
+需要走代理。首次全量会按条目数发请求（四人合计约五千条），之后靠缓存和增量。
 
-```bash
-python bangumi_to_enazo.py --input in/collection.xlsx   # 已设好 HTTP(S)_PROXY 的环境
-```
+抓条目详情默认 6 线程并发，但请求是**全局限速**的（默认 6 次/秒）：并发只用来吃掉
+网络往返时间，不会把接口打爆。实测 8/16 线程都没触发 429，偶发超时来自代理链路，
+所以超时设 15 秒、失败重试 3 次。
 
-首次全量约九百次请求，跑完缓存在 `cache/subjects/`，之后重跑命中缓存不再发请求。
-被限流时脚本读 `Retry-After` 并把间隔翻倍（上限 5 秒），不用手动干预；
-`Ctrl+C` 会先写出已完成的部分，原样重跑从缓存接着补。
+被限流时脚本读 `Retry-After` 并把请求间隔翻倍（上限 5 秒）；`Ctrl+C` 会写完当前用户
+已完成的部分，原样重跑接着来。
 
 ## 验证
 
-跑完看两个地方：
-
-1. `out/report.md` 的「接口失败」和「没补到额外别名的词条」；
-2. `out/bank.txt` 前几行，确认词条名没被切成半截、`$` 后面提示完整。
+1. 跑完看 `bin/exports/report-<date>.md`：失败条目、没补到别名的词条、格式自检结果；
+2. 抽查 `bin/exports/<user>-<date>.txt` 前几行，确认词条名没被截断、`$` 后提示完整；
+3. `--check` 会检查空行、多个 `$`、残留分隔符和空词条名。
 
 ## 已知限制
 
 - 依赖 Python 3.9+，只用标准库，不装第三方包；
-- 表格列名按 Bangumi 收藏导出认，换导出源要改 `bangumi/sheet.py` 里的列名表；
-- 已删除的条目（接口 404）补不到别名，只能用表格里的名字；
-- 词条名里的分隔符会被换成 `-`，这是 enazo 的切分规则决定的，不是 bug。
+- 私有收藏需要 access token，本工具只导公开收藏；
+- 已删除的条目（接口 404）补不到别名；
+- 增量发现不了「取消收藏」：条目被移出收藏不会从快照里删，需要 `--full` 重建；
+- 词条名里的分隔符会被换成 `-`，这是 enazo 的切分规则决定的。
 
 ## 相关
 
 - Bangumi API：<https://github.com/bangumi/api>
 - 收藏导出脚本：[gm_scripts](https://github.com/zhifengle/gm_scripts)
-- enazo 词库格式说明：见 `docs/enazo-词库格式.md`
+- [enazo 词库格式](docs/enazo-词库格式.md)
+- [词库合并方案](docs/词库合并方案.md)：设计取舍和边界情况
