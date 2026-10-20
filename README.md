@@ -79,7 +79,8 @@ python bangumi_to_enazo.py --input in/collection.xlsx --status all
 | `bin/exports/<昵称>-<日期>.txt` | 词库 | 同一天重跑会覆盖 |
 | `bin/exports/report-<日期>.md` | 当天报告 | 每次重写 |
 
-`bin/` 和 `local.json` 都不入库。
+`bin/data/`（缓存与快照）和 `local.json` 不入库；`bin/exports/` 的产出会入库，
+方便换机器时直接取题库，`.old/` 里的历史数据除外。
 
 ## 增量是怎么做的
 
@@ -202,7 +203,7 @@ python enazo_lib.py push 备份.json            # 把本地 json 推回去
 
 ## 验证
 
-1. 跑完看 `bin/exports/report-<date>.md`：失败条目、没补到别名的词条、格式自检结果；
+1. 跑完看 `bin/exports/report-<日期>.md`：失败条目、没补到别名的词条、格式自检结果；
 2. 抽查 `bin/exports/<昵称>-<日期>.txt` 前几行，确认词条名没被截断、`$` 后提示完整；
 3. `--check` 会检查空行、多个 `$`、残留分隔符和空词条名。
 

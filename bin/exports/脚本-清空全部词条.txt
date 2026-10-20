@@ -1,0 +1,46 @@
+(() => {
+  // 用法：打开 https://enazo.cn/seele?name=kahomegumin ，F12 → Console，
+  // 整段粘贴后回车。会先下载一份词库备份，再执行删除。
+  // 想改词库就在地址里换 name= 后面的名字。
+
+  // 1. 找到页面里的词库编辑组件
+  const seen = new Set(), hits = [];
+  const visit = (vm) => {
+    if (!vm || seen.has(vm)) return;
+    seen.add(vm);
+    if (vm.lib && Array.isArray(vm.lib.tags) && typeof vm.save === 'function') hits.push(vm);
+    (vm.$children || []).forEach(visit);
+  };
+  for (const el of document.querySelectorAll('*')) {
+    if (el.__vue__) visit(el.__vue__);
+  }
+  if (!hits.length) {
+    console.warn('没找到词库编辑组件：确认地址是 seele 页面，并且已经加载完成');
+    return;
+  }
+  const seele = hits[0];
+  const tags = seele.lib.tags;
+  console.log('当前词条数：', tags.length);
+
+  // 2. 先备份（会下载一个 json 到浏览器的下载目录）
+  const blob = new Blob([JSON.stringify(seele.lib, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `lib-${seele.name}-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  console.log('备份已下载，文件名 lib-' + seele.name + '-日期.json');
+
+  // 3. 全部删除：走页面自己的 removeTag，删除标记的格式和页面一致
+  if (!confirm(`备份已下载。确认把 ${tags.length} 个词条全部删除？`)) return;
+  const snapshot = tags.slice();
+  const realConfirm = window.confirm;
+  window.confirm = () => true;
+  try {
+    snapshot.forEach((tag) => seele.removeTag(tag));
+  } finally {
+    window.confirm = realConfirm;
+  }
+  seele.$forceUpdate();
+  seele.save();
+  console.log(`已标记删除 ${snapshot.length} 条，等页面弹出「保存成功」`);
+})();

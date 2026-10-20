@@ -1,6 +1,6 @@
-# 本机数据：缓存、快照、产出
+# 本机数据：缓存、快照不入库；导出产物（题库、脚本、报告）保留
 bin/data/
-bin/exports/
+bin/exports/.old/
 
 # 本机配置（用户列表放这里，不入库）
 local.json

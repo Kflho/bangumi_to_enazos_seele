@@ -1,0 +1,51 @@
+(() => {
+  // 只删指定名字的词条。用法同「清空全部词条」：
+  // 打开 seele 页面，F12 → Console，先把下面 NAMES 里的词条名换成要删的（一行一个），
+  // 再整段粘贴执行。会先下载备份，再提示命中几条。
+
+  const NAMES = `
+词条名1
+词条名2
+`;
+
+  // 1. 找到页面里的词库编辑组件
+  const seen = new Set(), hits = [];
+  const visit = (vm) => {
+    if (!vm || seen.has(vm)) return;
+    seen.add(vm);
+    if (vm.lib && Array.isArray(vm.lib.tags) && typeof vm.save === 'function') hits.push(vm);
+    (vm.$children || []).forEach(visit);
+  };
+  for (const el of document.querySelectorAll('*')) {
+    if (el.__vue__) visit(el.__vue__);
+  }
+  if (!hits.length) {
+    console.warn('没找到词库编辑组件：确认地址是 seele 页面，并且已经加载完成');
+    return;
+  }
+  const seele = hits[0];
+  const names = new Set(NAMES.split('\n').map((s) => s.trim()).filter(Boolean));
+  const targets = seele.lib.tags.filter((tag) => names.has(tag.name));
+  console.log('要删的词条名：', names.size, '个；实际命中：', targets.length, '条');
+  if (!targets.length) return;
+
+  // 2. 备份
+  const blob = new Blob([JSON.stringify(seele.lib, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `lib-${seele.name}-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+
+  // 3. 删除命中的词条
+  if (!confirm(`备份已下载。确认删除这 ${targets.length} 个词条？`)) return;
+  const realConfirm = window.confirm;
+  window.confirm = () => true;
+  try {
+    targets.forEach((tag) => seele.removeTag(tag));
+  } finally {
+    window.confirm = realConfirm;
+  }
+  seele.$forceUpdate();
+  seele.save();
+  console.log(`已标记删除 ${targets.length} 条，等页面弹出「保存成功」`);
+})();
