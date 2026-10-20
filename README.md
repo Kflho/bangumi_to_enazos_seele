@@ -12,9 +12,21 @@ sc_04/
 ├─ bin/
 │  ├─ data/          # 接口缓存与收藏快照（不入库）
 │  ├─ exports/       # 题库、脚本、报告
-│  └─ requirements/  # 格式说明与合并方案
+│  └─ requirements/  # 合并方案等本项目文档
 └─ local.json        # 本机配置（不入库）
 ```
+
+## 依赖与分工
+
+| 环节 | 在哪做 |
+|---|---|
+| Bangumi 收藏 → Excel | [gm_scripts](https://github.com/zhifengle/gm_scripts) 的导出脚本，外部维护，本项目不重复实现 |
+| 词库格式规范 | [javascript_projects](https://github.com/Kflho/javascript_projects) 的 `utils/excel转enazo题库/bin/references/enazo-词库格式.md` |
+| Excel → 词库行（本地小工具） | 同上仓库的 `convert.html` |
+| 拉收藏、多人合并、补别名、直接管理词库 | 本项目 `src/` |
+
+格式规则只在 `src/enazo/bank.py` 和 `optimize.py` 里实现一次，文档以 utils 那份为准；
+不要在本项目里再放一份格式说明，也不要重写 gm_scripts 的导出功能。
 
 ## 快速开始
 
@@ -260,5 +272,5 @@ txt 优化会写报告，列出每条规则补了多少、以及「同一个别�
 
 - Bangumi API：<https://github.com/bangumi/api>
 - 收藏导出脚本：[gm_scripts](https://github.com/zhifengle/gm_scripts)
-- [enazo 词库格式](bin/requirements/enazo-词库格式.md)
+- [enazo 词库格式](https://github.com/Kflho/javascript_projects/blob/main/utils/excel%E8%BD%ACenazo%E9%A2%98%E5%BA%93/bin/references/enazo-%E8%AF%8D%E5%BA%93%E6%A0%BC%E5%BC%8F.md)：格式规范以 utils 那份为准
 - [词库合并方案](bin/requirements/词库合并方案.md)：设计取舍和边界情况
