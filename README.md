@@ -8,11 +8,17 @@
 
 ```text
 sc_04/
-├─ src/              # 代码：三个入口脚本 + bangumi/ enazo/ 两个包
+├─ src/
+│  ├─ bangumi_to_enazo.py   # 拉收藏、出单人词库
+│  ├─ merge_bank.py         # 合并多人词库
+│  ├─ optimize_bank.py      # 给词库补别名
+│  ├─ enazo_lib.py          # 直接管理 enazo 词库
+│  ├─ bangumi/  enazo/      # 两个包
+│  └─ web/                  # 网页版转换工具（Excel → 词库行，本地打开）
 ├─ bin/
 │  ├─ data/          # 接口缓存与收藏快照（不入库）
 │  ├─ exports/       # 题库、脚本、报告
-│  └─ requirements/  # 合并方案等本项目文档
+│  └─ requirements/  # 词库格式规范、合并方案
 └─ local.json        # 本机配置（不入库）
 ```
 
@@ -21,12 +27,12 @@ sc_04/
 | 环节 | 在哪做 |
 |---|---|
 | Bangumi 收藏 → Excel | [gm_scripts](https://github.com/zhifengle/gm_scripts) 的导出脚本，外部维护，本项目不重复实现 |
-| 词库格式规范 | [javascript_projects](https://github.com/Kflho/javascript_projects) 的 `utils/excel转enazo题库/bin/references/enazo-词库格式.md` |
-| Excel → 词库行（本地小工具） | 同上仓库的 `convert.html` |
+| 词库格式规范 | 本项目 `bin/requirements/enazo-词库格式.md` |
+| Excel → 词库行（本地小工具） | 本项目 `src/web/convert.html`，浏览器打开即用 |
 | 拉收藏、多人合并、补别名、直接管理词库 | 本项目 `src/` |
 
-格式规则只在 `src/enazo/bank.py` 和 `optimize.py` 里实现一次，文档以 utils 那份为准；
-不要在本项目里再放一份格式说明，也不要重写 gm_scripts 的导出功能。
+格式规则在 `src/enazo/bank.py` 和 `optimize.py` 里实现，规范文档在 `bin/requirements/`，
+两边改动要一起对。GM 导出那步是外部脚本，不重写。
 
 ## 快速开始
 
@@ -168,6 +174,18 @@ bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/report.md
 - 合并了哪些同名词条；
 - 格式自检：空行、多个 `$`、残留分隔符。
 
+## 网页版转换（不联网）
+
+`src/web/convert.html` 是纯浏览器的 Excel → 词库行工具，双击打开就能用：
+
+- 输入列 `名称` / `别名` / `吐槽`；
+- 名称里的分隔符换成 `-`，多条评论逗号并列，同名条目合并；
+- 结果可以复制或下载。
+
+它只做格式转换，不补别名（补别名要联网查条目），需要优化时用 `optimize_bank.py`
+或 `enazo_lib optimize`。`src/web/xlsx.core.min.js` 是随页面分发的 SheetJS 运行时，
+两个文件必须放在同一目录。
+
 ## 直接管理 enazo 词库
 
 `enazo_lib.py` 直接调词库接口，不用打开页面点按钮。
@@ -272,5 +290,5 @@ txt 优化会写报告，列出每条规则补了多少、以及「同一个别�
 
 - Bangumi API：<https://github.com/bangumi/api>
 - 收藏导出脚本：[gm_scripts](https://github.com/zhifengle/gm_scripts)
-- [enazo 词库格式](https://github.com/Kflho/javascript_projects/blob/main/utils/excel%E8%BD%ACenazo%E9%A2%98%E5%BA%93/bin/references/enazo-%E8%AF%8D%E5%BA%93%E6%A0%BC%E5%BC%8F.md)：格式规范以 utils 那份为准
+- [enazo 词库格式](bin/requirements/enazo-词库格式.md)：批量录入格式与清洗规则
 - [词库合并方案](bin/requirements/词库合并方案.md)：设计取舍和边界情况
