@@ -343,6 +343,18 @@ def main(argv=None) -> int:
     if args.command == "clear":
         return cmd_clear(args.name)
     if args.command == "meta":
+        zones = None
+        if args.zone is not None:
+            # 传 none / - 表示清空专区
+            if [item.strip().lower() for item in args.zone] in (["none"], ["-"], ["无"]):
+                zones = []
+            else:
+                zones = [
+                    z.strip()
+                    for item in args.zone
+                    for z in item.replace("，", ",").split(",")
+                    if z.strip()
+                ]
         return cmd_meta(
             args.name,
             {
@@ -352,7 +364,7 @@ def main(argv=None) -> int:
                 "author": args.author,
                 "groupNumber": args.group,
                 "robotGroupNumber": args.robot_group,
-                "types": args.zone,
+                "types": zones,
             },
         )
     if args.command == "copy":

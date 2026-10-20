@@ -158,6 +158,7 @@ python enazo_lib.py clear                    # 清空（打删除标记）
 python enazo_lib.py copy --source 另一个库    # 整份复制另一个词库的条目
 python enazo_lib.py copy --source 另一个库 --meta # 连简介、群号、专区、作者一起搬
 python enazo_lib.py meta --title 名称 --summary 简介 --resume 介绍 --group 群号 --zone 日本动画
+python enazo_lib.py meta --zone none          # 清空专区；其余字段不传就不改
 python enazo_lib.py push 备份.json            # 把本地 json 推回去
 ```
 
