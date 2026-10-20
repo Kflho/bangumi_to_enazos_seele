@@ -140,6 +140,29 @@ bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/report.md
 - 同名词条（多半是不同季/不同版本，只提醒不算错）；
 - 格式自检：空行、多个 `$`、残留分隔符。
 
+## 直接管理 enazo 词库
+
+`enazo_lib.py` 直接调词库接口，不用打开页面点按钮。
+
+词库的「唯一标识码」（`https://enazo.cn/seele?name=xxx` 里的 `xxx`）就是钥匙：
+接口不校验登录，谁拿到码谁就能改库，所以别把码贴到公开地方。词库名写在
+`local.json` 的 `enazo_lib` 里。
+
+```bash
+python enazo_lib.py stat                     # 看词库现状
+python enazo_lib.py pull                     # 拉一份 json 备份到 bin/data/enazo
+python enazo_lib.py import 题库.txt          # 用题库替换全部词条
+python enazo_lib.py import 题库.txt --append # 追加；同名合并别名和提示
+python enazo_lib.py import 题库.txt --limit 5 # 只导前 5 条，试水
+python enazo_lib.py clear                    # 清空（打删除标记）
+python enazo_lib.py push 备份.json            # 把本地 json 推回去
+```
+
+写之前会自动把当前词库备份到 `bin/data/enazo/<词库名>-<时间>.json`。
+
+导入时按站点自己的规则解析每一行：`#` 后面是备注、`$` 后面是小狐狸提示、
+`^` 后面是角色，别名和提示都按 `, ， ; ； 、 /` 切分并去重。
+
 ## 常用参数
 
 | 参数 | 说明 |
