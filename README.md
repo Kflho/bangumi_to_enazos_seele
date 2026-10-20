@@ -167,6 +167,7 @@ python src/enazo_lib.py import 题库.txt          # 用题库替换全部词条
 python src/enazo_lib.py import 题库.txt --append # 追加；同名合并别名和提示
 python src/enazo_lib.py import 题库.txt --limit 5 # 只导前 5 条，试水
 python src/enazo_lib.py clear                    # 清空（打删除标记）
+python src/enazo_lib.py optimize                 # 就地补优化别名
 python src/enazo_lib.py copy --source 另一个库    # 整份复制另一个词库的条目
 python src/enazo_lib.py copy --source 另一个库 --meta # 连简介、群号、专区、作者一起搬
 python src/enazo_lib.py meta --title 名称 --summary 简介 --resume 介绍 --group 群号 --zone 日本动画
@@ -177,6 +178,28 @@ python src/enazo_lib.py push 备份.json            # 把本地 json 推回去
 改别的库用 `--name 词库码`；默认读 `local.json` 的 `enazo_lib`。
 
 写之前会自动把当前词库备份到 `bin/data/enazo/<词库名>-<时间>.json`。
+
+## 题库优化
+
+`src/enazo/optimize.py` 给词条补四类更容易猜的别名，原来的别名一个不动：
+
+| 规则 | 例子 |
+|---|---|
+| 去子标题 | `攻壳机动队：无罪` → `攻壳机动队` |
+| 去季度 | `无职转生 第三季 ～到了异世界就拿出真本事～` → `无职转生` |
+| 纯文本 | `Re：从零开始的异世界生活` → `Re从零开始的异世界生活` |
+| 最短包含 | 库里有 `攻壳机动队`，`攻壳机动队 S.A.C. 2nd GIG` 也拿它当别名 |
+
+三种用法：
+
+```bash
+python src/optimize_bank.py --input 题库.txt     # 优化 txt，输出 ...-optimized.txt
+python src/enazo_lib.py optimize                 # 直接优化线上词库
+python src/enazo_lib.py import 题库.txt --optimize # 导入时顺便优化
+```
+
+`--min-alias` 挡掉 `Re` 这种两字碎片（默认 3 字）；`--min-substring` 控制最短包含的最小长度。
+txt 优化会写报告，列出每条规则补了多少、以及「同一个别名挂在多个词条上」的歧义项。
 
 导入时按站点自己的规则解析每一行：`#` 后面是备注、`$` 后面是小狐狸提示、
 `^` 后面是角色，别名和提示都按 `, ， ; ； 、 /` 切分并去重。

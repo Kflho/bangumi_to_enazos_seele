@@ -28,6 +28,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from enazo.optimize import optimize_entries
+
 ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 LOCAL_JSON = ROOT / "local.json"
 DATA_DIR = ROOT / "bin" / "data" / "enazo"
@@ -76,7 +78,11 @@ def get_lib(name: str) -> dict:
 
 
 def post_lib(name: str, lib: dict) -> dict:
-    return _request(f"{BASE}/lib/{name}", lib)
+    """写词库。服务端按 modified 做并发校验，冲突时返回 {"error": ...}。"""
+    result = _request(f"{BASE}/lib/{name}", lib)
+    if isinstance(result, dict) and result.get("error"):
+        raise RuntimeError(str(result["error"]).strip())
+    return result
 
 
 def backup(name: str, lib: dict) -> Path:
@@ -208,7 +214,7 @@ def cmd_clear(name: str) -> int:
     return 0
 
 
-def cmd_import(name: str, bank: Path, append: bool, limit: int) -> int:
+def cmd_import(name: str, bank: Path, append: bool, limit: int, optimize: bool) -> int:
     if not bank.exists():
         print(f"找不到题库：{bank}", file=sys.stderr)
         return 2
@@ -218,6 +224,12 @@ def cmd_import(name: str, bank: Path, append: bool, limit: int) -> int:
     if not new_tags:
         print("题库里没有解析出词条", file=sys.stderr)
         return 2
+
+    if optimize:
+        stats, _ = optimize_entries(new_tags)
+        added = sum(stats.values())
+        detail = "，".join(f"{rule} {count}" for rule, count in stats.most_common())
+        print(f"题库优化：给 {len(new_tags)} 条补了 {added} 个别名（{detail}）")
 
     lib = get_lib(name)
     old_tags = lib.get("tags") or []
@@ -307,20 +319,57 @@ def cmd_push(name: str, path: Path) -> int:
         print(f"找不到文件：{path}", file=sys.stderr)
         return 2
     lib = json.loads(path.read_text(encoding="utf-8-sig"))
+    current = get_lib(name)
+    # 服务端按 modified 判断有没有被改过，推之前先取服务端当前版本号
+    lib["modified"] = current.get("modified")
     post_lib(name, lib)
     after = get_lib(name)
     print(f"已推送，服务端现在 {len(after.get('tags') or [])} 条")
     return 0
 
 
+def cmd_optimize(name: str, dry_run: bool) -> int:
+    """就地把线上词库补一遍别名。"""
+    lib = get_lib(name)
+    tags = lib.get("tags") or []
+    if not tags:
+        print("词库是空的，没什么可优化")
+        return 0
+
+    before = sum(len(tag.get("alias") or []) for tag in tags)
+    stats, _ = optimize_entries(tags)
+    added = sum(stats.values())
+    after_count = sum(len(tag.get("alias") or []) for tag in tags)
+    print(f"词条 {len(tags)} 条，别名 {before} -> {after_count}（新增 {added}）")
+    for rule, count in stats.most_common():
+        print(f"  {rule}: {count}")
+    if dry_run:
+        print("--dry-run，没有写回")
+        return 0
+
+    lib["tags"] = tags
+    post_lib(name, lib)
+    latest = get_lib(name)
+    print(f"已写回，服务端现在 {len(latest.get('tags') or [])} 条，"
+          f"别名合计 {sum(len(tag.get('alias') or []) for tag in latest.get('tags') or [])} 个")
+    return 0
+
+
 def main(argv=None) -> int:
     config = load_config()
     parser = argparse.ArgumentParser(description="enazo 词库本地管理")
-    parser.add_argument("command", choices=["stat", "pull", "clear", "import", "copy", "meta", "push"])
+    parser.add_argument(
+        "command",
+        choices=["stat", "pull", "clear", "import", "copy", "meta", "optimize", "push"],
+    )
     parser.add_argument("target", nargs="?", help="import/push 用的文件路径")
     parser.add_argument("--name", default=config.get("enazo_lib", ""), help="词库唯一标识码")
     parser.add_argument("--source", help="copy 时的来源词库")
     parser.add_argument("--meta", action="store_true", help="copy 时连简介、群号、专区和作者一起搬")
+    parser.add_argument(
+        "--optimize", action="store_true", help="import 前先补去子标题、去季度、纯文本、最短包含的别名"
+    )
+    parser.add_argument("--dry-run", action="store_true", help="optimize 时只统计不写回")
     parser.add_argument("--append", action="store_true", help="追加而不是替换")
     parser.add_argument("--limit", type=int, default=0, help="只导入前 N 条，试水用")
     parser.add_argument("--title", help="词库名称")
@@ -367,15 +416,21 @@ def main(argv=None) -> int:
                 "types": zones,
             },
         )
+    if args.command == "optimize":
+        return cmd_optimize(args.name, args.dry_run)
     if args.command == "copy":
         return cmd_copy(args.name, args.source, args.meta)
     if args.command in ("import", "push") and not args.target:
         print(f"{args.command} 需要一个文件路径", file=sys.stderr)
         return 2
     if args.command == "import":
-        return cmd_import(args.name, Path(args.target), args.append, args.limit)
+        return cmd_import(args.name, Path(args.target), args.append, args.limit, args.optimize)
     return cmd_push(args.name, Path(args.target))
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except RuntimeError as exc:
+        print(f"服务端拒绝：{exc}", file=sys.stderr)
+        raise SystemExit(1)
