@@ -6,6 +6,16 @@
 词条名,别名一,别名二$小狐狸提示
 ```
 
+```text
+sc_04/
+├─ src/              # 代码：三个入口脚本 + bangumi/ enazo/ 两个包
+├─ bin/
+│  ├─ data/          # 接口缓存与收藏快照（不入库）
+│  ├─ exports/       # 题库、脚本、报告
+│  └─ requirements/  # 格式说明与合并方案
+└─ local.json        # 本机配置（不入库）
+```
+
 ## 快速开始
 
 在仓库根目录放一个 `local.json`（不入库）：
@@ -22,7 +32,7 @@
 然后：
 
 ```bash
-python bangumi_to_enazo.py
+python src/bangumi_to_enazo.py
 ```
 
 产出（文件名用昵称，不用数字 id）：
@@ -35,7 +45,7 @@ bin/exports/report-2026-10-20.md
 
 昵称会缓存在 `bin/data/profiles.json`，离线跑也能用昵称命名。
 
-临时指定用户也行：`python bangumi_to_enazo.py --user sai`。
+临时指定用户也行：`python src/bangumi_to_enazo.py --user sai`。
 
 ## 标记与状态
 
@@ -52,8 +62,8 @@ Bangumi 的标记分五种状态，接口里是 `type` 1–5：
 要别的状态就显式写，逗号分隔，`all` 表示五种都要：
 
 ```bash
-python bangumi_to_enazo.py --status 看过,在看
-python bangumi_to_enazo.py --status all
+python src/bangumi_to_enazo.py --status 看过,在看
+python src/bangumi_to_enazo.py --status all
 ```
 
 ## 数据来源
@@ -64,7 +74,7 @@ python bangumi_to_enazo.py --status all
 **导出表**：也能吃 [gm_scripts](https://github.com/zhifengle/gm_scripts) 导出的 xlsx / csv：
 
 ```bash
-python bangumi_to_enazo.py --input in/collection.xlsx --status all
+python src/bangumi_to_enazo.py --input in/collection.xlsx --status all
 ```
 
 表里要有 `名称` / `别名` / `地址` / `吐槽` / `观看状态` 这几列，表头写成
@@ -123,7 +133,7 @@ enazo 把 `,` `，` `、` `;` `；` `/` 和空白当分隔符，名字里带这�
 然后直接跑：
 
 ```bash
-python merge_bank.py
+python src/merge_bank.py
 ```
 
 产出（题库名后面跟日期）：
@@ -150,17 +160,17 @@ bin/exports/动画截图花菜q袜吃婆罗门题库-2026-10-20/report.md
 `local.json` 的 `enazo_lib` 里。
 
 ```bash
-python enazo_lib.py stat                     # 看词库现状
-python enazo_lib.py pull                     # 拉一份 json 备份到 bin/data/enazo
-python enazo_lib.py import 题库.txt          # 用题库替换全部词条
-python enazo_lib.py import 题库.txt --append # 追加；同名合并别名和提示
-python enazo_lib.py import 题库.txt --limit 5 # 只导前 5 条，试水
-python enazo_lib.py clear                    # 清空（打删除标记）
-python enazo_lib.py copy --source 另一个库    # 整份复制另一个词库的条目
-python enazo_lib.py copy --source 另一个库 --meta # 连简介、群号、专区、作者一起搬
-python enazo_lib.py meta --title 名称 --summary 简介 --resume 介绍 --group 群号 --zone 日本动画
-python enazo_lib.py meta --zone none          # 清空专区；其余字段不传就不改
-python enazo_lib.py push 备份.json            # 把本地 json 推回去
+python src/enazo_lib.py stat                     # 看词库现状
+python src/enazo_lib.py pull                     # 拉一份 json 备份到 bin/data/enazo
+python src/enazo_lib.py import 题库.txt          # 用题库替换全部词条
+python src/enazo_lib.py import 题库.txt --append # 追加；同名合并别名和提示
+python src/enazo_lib.py import 题库.txt --limit 5 # 只导前 5 条，试水
+python src/enazo_lib.py clear                    # 清空（打删除标记）
+python src/enazo_lib.py copy --source 另一个库    # 整份复制另一个词库的条目
+python src/enazo_lib.py copy --source 另一个库 --meta # 连简介、群号、专区、作者一起搬
+python src/enazo_lib.py meta --title 名称 --summary 简介 --resume 介绍 --group 群号 --zone 日本动画
+python src/enazo_lib.py meta --zone none          # 清空专区；其余字段不传就不改
+python src/enazo_lib.py push 备份.json            # 把本地 json 推回去
 ```
 
 改别的库用 `--name 词库码`；默认读 `local.json` 的 `enazo_lib`。

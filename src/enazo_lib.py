@@ -6,12 +6,12 @@
 
 用法：
 
-    python enazo_lib.py stat                    # 看词库现状
-    python enazo_lib.py pull                    # 拉一份 json 备份
-    python enazo_lib.py import 题库.txt          # 用题库替换全部词条
-    python enazo_lib.py import 题库.txt --append # 追加（同名合并别名和提示）
-    python enazo_lib.py clear                   # 清空（打删除标记）
-    python enazo_lib.py push 备份.json           # 把本地 json 推回去
+    python src/enazo_lib.py stat                    # 看词库现状
+    python src/enazo_lib.py pull                    # 拉一份 json 备份
+    python src/enazo_lib.py import 题库.txt          # 用题库替换全部词条
+    python src/enazo_lib.py import 题库.txt --append # 追加（同名合并别名和提示）
+    python src/enazo_lib.py clear                   # 清空（打删除标记）
+    python src/enazo_lib.py push 备份.json           # 把本地 json 推回去
 
 词库名放在 local.json 的 enazo_lib 字段；也可以 --name 临时指定。
 """
@@ -28,7 +28,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 LOCAL_JSON = ROOT / "local.json"
 DATA_DIR = ROOT / "bin" / "data" / "enazo"
 BASE = "https://draw-hd2.enazo.cn/api/draw"

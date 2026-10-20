@@ -11,8 +11,8 @@
 
 用法：
 
-    python merge_bank.py --users 469325 869334 chiotto 723737
-    python merge_bank.py --users a b --date 2026-10-20 --dash seps
+    python src/merge_bank.py --users 469325 869334 chiotto 723737
+    python src/merge_bank.py --users a b --date 2026-10-20 --dash seps
 
 产出：
 
@@ -32,7 +32,7 @@ from pathlib import Path
 
 from enazo.bank import DASH_MODES, build_tokens, check_lines, clean_hint
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 DATA_DIR = ROOT / "bin" / "data"
 EXPORTS_DIR = ROOT / "bin" / "exports"
 LOCAL_JSON = ROOT / "local.json"

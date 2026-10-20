@@ -3,9 +3,9 @@
 
 数据来源二选一：
 
-    python bangumi_to_enazo.py                  # 用 local.json 里的用户列表
-    python bangumi_to_enazo.py --user sai       # 临时指定一个用户
-    python bangumi_to_enazo.py --input in/collection.xlsx   # 已有的收藏导出表
+    python src/bangumi_to_enazo.py                  # 用 local.json 里的用户列表
+    python src/bangumi_to_enazo.py --user sai       # 临时指定一个用户
+    python src/bangumi_to_enazo.py --input in/collection.xlsx   # 已有的收藏导出表
 
 产出按日期存档，同一天重跑覆盖当天的文件：
 
@@ -33,7 +33,7 @@ from bangumi.sheet import read_collection
 from bangumi.subject import SubjectStore
 from enazo.bank import DASH_MODES, build_line, check_lines, sanitize
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent  # 代码在 src/ 下，项目根是上一层
 LOCAL_JSON = ROOT / "local.json"
 DATA_DIR = ROOT / "bin" / "data"
 EXPORTS_DIR = ROOT / "bin" / "exports"
