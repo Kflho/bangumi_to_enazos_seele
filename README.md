@@ -155,8 +155,13 @@ python enazo_lib.py import 题库.txt          # 用题库替换全部词条
 python enazo_lib.py import 题库.txt --append # 追加；同名合并别名和提示
 python enazo_lib.py import 题库.txt --limit 5 # 只导前 5 条，试水
 python enazo_lib.py clear                    # 清空（打删除标记）
+python enazo_lib.py copy --source 另一个库    # 整份复制另一个词库的条目
+python enazo_lib.py copy --source 另一个库 --meta # 连简介、群号、专区、作者一起搬
+python enazo_lib.py meta --title 名称 --summary 简介 --resume 介绍 --group 群号 --zone 日本动画
 python enazo_lib.py push 备份.json            # 把本地 json 推回去
 ```
+
+改别的库用 `--name 词库码`；默认读 `local.json` 的 `enazo_lib`。
 
 写之前会自动把当前词库备份到 `bin/data/enazo/<词库名>-<时间>.json`。
 

@@ -254,6 +254,54 @@ def cmd_import(name: str, bank: Path, append: bool, limit: int) -> int:
     return 0
 
 
+def cmd_meta(name: str, updates: dict) -> int:
+    """改词库信息：名称、简介、介绍、作者、群号、专区。只改传进来的字段。"""
+    clean = {key: value for key, value in updates.items() if value is not None}
+    if not clean:
+        print("没有要改的字段", file=sys.stderr)
+        return 2
+    lib = get_lib(name)
+    print(f"备份 -> {backup(name, lib)}")
+    before = {key: lib.get(key) for key in clean}
+    lib.update(clean)
+    post_lib(name, lib)
+
+    after = get_lib(name)
+    for key, value in clean.items():
+        shown = value if not isinstance(value, str) or len(value) <= 60 else value[:60] + "…"
+        print(f"  {key}: {before.get(key)!r} -> {after.get(key)!r}" if shown else f"  {key}: -> {value!r}")
+    return 0
+
+
+def cmd_copy(dest: str, source: str, with_meta: bool) -> int:
+    """把 source 词库的条目整份复制到 dest；--meta 时连简介、群号、专区和作者一起搬。"""
+    if not source:
+        print("copy 需要 --source 指定来源词库", file=sys.stderr)
+        return 2
+    if source == dest:
+        print("来源和目标是同一个词库", file=sys.stderr)
+        return 2
+
+    src = get_lib(source)
+    dst = get_lib(dest)
+    print(f"来源 {source}: {len(src.get('tags') or [])} 条")
+    print(f"目标 {dest}: {len(dst.get('tags') or [])} 条（备份 -> {backup(dest, dst)}）")
+
+    dst["tags"] = json.loads(json.dumps(src.get("tags") or []))
+    if with_meta:
+        for key in ("author", "summary", "resume", "groupNumber", "robotGroupNumber", "types"):
+            if key in src:
+                dst[key] = src[key]
+
+    post_lib(dest, dst)
+    after = get_lib(dest)
+    print(f"写入完成，{dest} 现在 {len(after.get('tags') or [])} 条")
+    if with_meta:
+        print(f"  简介：{after.get('summary')}")
+        print(f"  群号：{after.get('groupNumber')}  专区：{after.get('types')}")
+    return 0
+
+
 def cmd_push(name: str, path: Path) -> int:
     if not path.exists():
         print(f"找不到文件：{path}", file=sys.stderr)
@@ -268,11 +316,20 @@ def cmd_push(name: str, path: Path) -> int:
 def main(argv=None) -> int:
     config = load_config()
     parser = argparse.ArgumentParser(description="enazo 词库本地管理")
-    parser.add_argument("command", choices=["stat", "pull", "clear", "import", "push"])
+    parser.add_argument("command", choices=["stat", "pull", "clear", "import", "copy", "meta", "push"])
     parser.add_argument("target", nargs="?", help="import/push 用的文件路径")
     parser.add_argument("--name", default=config.get("enazo_lib", ""), help="词库唯一标识码")
+    parser.add_argument("--source", help="copy 时的来源词库")
+    parser.add_argument("--meta", action="store_true", help="copy 时连简介、群号、专区和作者一起搬")
     parser.add_argument("--append", action="store_true", help="追加而不是替换")
     parser.add_argument("--limit", type=int, default=0, help="只导入前 N 条，试水用")
+    parser.add_argument("--title", help="词库名称")
+    parser.add_argument("--summary", help="简介（一句话）")
+    parser.add_argument("--resume", help="介绍（长文）")
+    parser.add_argument("--author", help="作者")
+    parser.add_argument("--group", help="题库群聊群号")
+    parser.add_argument("--robot-group", help="粉红妹猜画交互群号")
+    parser.add_argument("--zone", action="append", help="希望所在专区，可重复")
     args = parser.parse_args(argv)
 
     if not args.name:
@@ -285,6 +342,21 @@ def main(argv=None) -> int:
         return cmd_pull(args.name)
     if args.command == "clear":
         return cmd_clear(args.name)
+    if args.command == "meta":
+        return cmd_meta(
+            args.name,
+            {
+                "name": args.title,
+                "summary": args.summary,
+                "resume": args.resume,
+                "author": args.author,
+                "groupNumber": args.group,
+                "robotGroupNumber": args.robot_group,
+                "types": args.zone,
+            },
+        )
+    if args.command == "copy":
+        return cmd_copy(args.name, args.source, args.meta)
     if args.command in ("import", "push") and not args.target:
         print(f"{args.command} 需要一个文件路径", file=sys.stderr)
         return 2
